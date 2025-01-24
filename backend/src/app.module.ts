@@ -15,7 +15,7 @@ import { APP_GUARD } from '@nestjs/core';
         limit: 10
       }],
       errorMessage: "Too Many Requests! Slow down......"
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, PrismaClientService, RedisService, {
