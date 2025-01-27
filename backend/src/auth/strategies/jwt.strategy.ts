@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
@@ -19,11 +19,18 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       secretOrKey: config.get('JWT_SECRET') || '',
     });
   }
+  
 
-  async validate(payload: { sub: number; email: string }) {
+  async validate(payload: any) {    
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
+      select: { id: true, email: true } 
     });
+        
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    
     return user;
   }
 }

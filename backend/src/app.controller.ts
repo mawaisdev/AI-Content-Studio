@@ -4,6 +4,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { Cache } from '@nestjs/cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Public } from './common/decorators/public.decorator';
+import { Authenticated } from './common/decorators/authenticated.decorator';
 
 @Controller()
 export class AppController {
@@ -19,6 +20,7 @@ export class AppController {
   }
 
   @Get('/protected')
+  @Authenticated()
   protectedRoute() {
     return { message: 'This is protected' };
   }
@@ -26,7 +28,6 @@ export class AppController {
   @Public()
   @Get('/cache-test')
   async cacheTest() {
-    console.log('Cache Endpoint');
     const cached = await this.cacheManager.get('test');
     if (!cached) {
       await this.cacheManager.set('test', 'redis_works', 10);

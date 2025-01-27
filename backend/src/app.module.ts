@@ -15,9 +15,13 @@ import { RedisThrottlerGuard } from './common/guards/custom-throttler.guard';
 import { HealthController } from './health/health.controller';
 import { TerminusModule } from '@nestjs/terminus';
 import { AiModule } from './ai/ai.module';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './auth/strategies/jwt.strategy';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule.forRoot({
       isGlobal: true,
       // validationSchema: configSchema,
@@ -49,6 +53,11 @@ import { AiModule } from './ai/ai.module';
   controllers: [AppController, HealthController],
   providers: [
     AppService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: RedisThrottlerGuard,

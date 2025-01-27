@@ -12,6 +12,7 @@ export const configSchema = z.object({
   CACHE_TTL: z.coerce.number().default(3600),
   OPENAI_API_KEY: z.string(),
   OPENAI_MODEL: z.string(),
+  COHERE_API_KEY: z.string()
 });
 
 export interface AppConfig {
@@ -27,6 +28,7 @@ export interface AppConfig {
   cacheTtl: number;
   openaiApiKey: string;
   openaiModel: string;
+  cohereApiKey: string;
 }
 
 export default registerAs(
@@ -48,5 +50,6 @@ export default registerAs(
     cacheTtl: parseInt(process.env.CACHE_TTL || '3600', 10),
     openaiApiKey: process.env.OPENAI_API_KEY || '',
     openaiModel: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
+    cohereApiKey: process.env.COHERE_API_KEY || ""
   }),
 );

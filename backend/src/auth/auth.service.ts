@@ -29,20 +29,39 @@ export class AuthService {
     return this.signToken(user.id, user.email);
   }
 
+  // async login(dto: LoginDto): Promise<AuthResponse> {
+  //   const user = await this.prisma.user.findUnique({
+  //     where: { email: dto.email },
+  //   });
+  //   const isCorrectPassword = await bcrypt.compare(
+  //     dto.password,
+  //     user?.password || '',
+  //   );
+  //   if (!user || !isCorrectPassword) {
+  //     throw new UnauthorizedException('Invalid credentials');
+  //   }
+
+  //   return this.signToken(user.id, user.email);
+  // }
+
   async login(dto: LoginDto): Promise<AuthResponse> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
-    const isCorrectPassword = await bcrypt.compare(
-      dto.password,
-      user?.password || '',
-    );
-    if (!user || !isCorrectPassword) {
+  
+    if (!user) {
+      await bcrypt.compare(dto.password, '$2b$10$fakehashforsecurity');
       throw new UnauthorizedException('Invalid credentials');
     }
-
+  
+    const isCorrectPassword = await bcrypt.compare(dto.password, user.password);
+    if (!isCorrectPassword) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+  
     return this.signToken(user.id, user.email);
   }
+
   private async signToken(
     userId: number,
     email: string,

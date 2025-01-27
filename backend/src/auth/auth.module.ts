@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthService } from './auth.service';
@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
     PassportModule,
     PrismaModule,
     JwtModule.registerAsync({
+      imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: '1h' },

@@ -49,9 +49,17 @@ async function bootstrap() {
     }),
   );
 
-  const reflector = app.get(Reflector);
-
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
+  app.useGlobalGuards(
+    new JwtAuthGuard(app.get(Reflector))
+  ); 
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
+
+
+// Add these type definitions if needed
+declare global {
+  interface Blob {
+    arrayBuffer(): Promise<ArrayBuffer>;
+  }
+}
