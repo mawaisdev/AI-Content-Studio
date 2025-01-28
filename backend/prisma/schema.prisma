@@ -8,10 +8,49 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   fullname  String
-  email     String   @unique
+  email     String    @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+  roles     UserRole[]
+}
+
+model Project {
+  id                Int      @id @default(autoincrement())
+  isCompleted       Boolean  @default(false)
+  initialPrompt     String
+  imagePrompt       String?
+  generatedContent  String
+  suggestedAudience Json?
+  imageUrl          String?
+  audioUrl          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  userId            Int
+  user              User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Role {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  users    UserRole[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model UserRole {
+  userId    Int
+  roleId    Int
+  assignedAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  role      Role     @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@index([userId])
 }

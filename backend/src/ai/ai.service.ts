@@ -59,7 +59,7 @@ export class AiService {
       return await this.client.textToImage({
         model: "black-forest-labs/FLUX.1-dev",
         inputs: prompt,
-        parameters: { num_inference_steps: 5 },
+        parameters: { num_inference_steps: 25 },
         provider: "hf-inference",
       });
     } catch (error) {

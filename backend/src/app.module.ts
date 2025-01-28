@@ -19,6 +19,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { JwtModule } from '@nestjs/jwt';
     RedisModule,
     TerminusModule,
     AiModule,
+    ProjectModule,
   ],
   controllers: [AppController, HealthController],
   providers: [
