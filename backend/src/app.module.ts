@@ -18,10 +18,10 @@ import { AiModule } from './ai/ai.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule.forRoot({
       isGlobal: true,
       // validationSchema: configSchema,
@@ -53,7 +53,6 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
   controllers: [AppController, HealthController],
   providers: [
     AppService,
-    JwtStrategy,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

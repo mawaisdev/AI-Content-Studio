@@ -1,36 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Strategy, ExtractJwt } from 'passport-jwt';
+import { PrismaService } from '../../prisma/prisma.service';
+
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(
-    config: ConfigService,
-    private prisma: PrismaService,
-  ) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(private prisma: PrismaService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: config.get('JWT_SECRET') || '',
+      ignoreExpiration: false,
+      secretOrKey: process.env.JWT_SECRET || "" ,
     });
   }
-  
 
-  async validate(payload: any) {    
+  async validate(payload: { sub: number }) {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
-      select: { id: true, email: true } 
     });
-        
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-    
+    if (!user) throw new UnauthorizedException('User not found');
     return user;
   }
 }

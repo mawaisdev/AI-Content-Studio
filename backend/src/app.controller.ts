@@ -1,26 +1,23 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
-import { PrismaService } from './prisma/prisma.service';
 import { Cache } from '@nestjs/cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Public } from './common/decorators/public.decorator';
-import { Authenticated } from './common/decorators/authenticated.decorator';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   @Get()
+  @Public()
   getHello(): string {
     return this.appService.getHello();
   }
 
-  @Get('/protected')
-  @Authenticated()
+  @Get('/protected-endpoint')
   protectedRoute() {
     return { message: 'This is protected' };
   }

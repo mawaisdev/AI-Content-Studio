@@ -29,20 +29,6 @@ export class AuthService {
     return this.signToken(user.id, user.email);
   }
 
-  // async login(dto: LoginDto): Promise<AuthResponse> {
-  //   const user = await this.prisma.user.findUnique({
-  //     where: { email: dto.email },
-  //   });
-  //   const isCorrectPassword = await bcrypt.compare(
-  //     dto.password,
-  //     user?.password || '',
-  //   );
-  //   if (!user || !isCorrectPassword) {
-  //     throw new UnauthorizedException('Invalid credentials');
-  //   }
-
-  //   return this.signToken(user.id, user.email);
-  // }
 
   async login(dto: LoginDto): Promise<AuthResponse> {
     const user = await this.prisma.user.findUnique({
@@ -66,9 +52,17 @@ export class AuthService {
     userId: number,
     email: string,
   ): Promise<AuthResponse> {
-    const payload = { sub: userId, email };
-    const token = await this.jwt.signAsync(payload);
-
+    const payload = { 
+      sub: userId,
+      email,
+      iss: 'auth-service',
+      iat: Math.floor(Date.now() / 1000)
+    };
+    
+    const token = await this.jwt.signAsync(payload, {
+      expiresIn: '1h'
+    });
+  
     return { accessToken: token };
   }
 }
