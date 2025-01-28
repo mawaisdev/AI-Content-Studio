@@ -38,14 +38,14 @@ export class AiController {
 
 
 
-  private buildPrompt(dto: GenerateTextDto): string {
-    return `Generate ${dto.content_type} content following these requirements:
+  private buildPrompt({content_type, keywords, tone}: GenerateTextDto): string {
+    return `Generate ${content_type} content following these requirements:
   
   1. Content Requirements:
-    - Primary keywords: ${dto.keywords}
-    - Tone: ${dto.tone || 'neutral'}
+    - Primary keywords: ${keywords}
+    - Tone: ${tone || 'neutral'}
     - Include: 1 practical example, 3 key takeaways
-    - Length: ${dto.wordLimit ? `${dto.wordLimit} words` : 'concise'}
+    - Length: Minimum of 500 words
     - Paragraphs: Minimum 3
   
   2. Image Prompt Requirements:

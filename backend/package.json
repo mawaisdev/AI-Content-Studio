@@ -35,6 +35,7 @@
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/throttler": "^6.4.0",
     "@prisma/client": "^6.2.1",
+    "@supabase/supabase-js": "^2.48.1",
     "@types/ioredis": "^4.28.10",
     "bcrypt": "^5.1.1",
     "cache-manager-redis-store": "^3.0.1",

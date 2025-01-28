@@ -20,6 +20,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ProjectModule } from './project/project.module';
+import { SupabaseService } from './supabase/supabase.service';
+import { SupabaseModule } from './supabase/supabase.module';
 
 @Module({
   imports: [
@@ -51,6 +53,7 @@ import { ProjectModule } from './project/project.module';
     TerminusModule,
     AiModule,
     ProjectModule,
+    SupabaseModule,
   ],
   controllers: [AppController, HealthController],
   providers: [
@@ -64,6 +67,7 @@ import { ProjectModule } from './project/project.module';
       useClass: RedisThrottlerGuard,
     },
     PrismaService,
+    SupabaseService,
   ],
 })
 export class AppModule {}
