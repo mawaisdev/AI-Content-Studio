@@ -6,12 +6,9 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import helmet from 'helmet';
-import { logger } from './logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger,
-  });
+  const app = await NestFactory.create(AppModule);
 
   // Security Middlewares
   app.use(

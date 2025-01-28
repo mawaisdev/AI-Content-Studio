@@ -19,41 +19,41 @@ export class AiService {
 
   async generateText(prompt: string, options: {} = {}) {
     try {
-      // const completion = await this.client.chat.completions.create({
-      //   messages: [{ role: 'user', content: prompt }],
-      //   model: this.config.get('ai.model') || 'gpt-3.5-turbo',
-      //   temperature: this.config.get('ai.temperature'),
-      // });
-
-      // return {
-      //   content: completion.choices[0].message.content,
-      //   tokens: completion.usage?.total_tokens,
-      // };
-
       const response = await this.cohere.generate({
         model: 'command',
         prompt,
-        maxTokens: 600,
+        maxTokens: 5000,
         temperature: 0.7,
         k: 0,
         stopSequences: [],
         returnLikelihoods: 'NONE',
         ...options,
       });
-
-      const generatedContent: {generatedContent: string, imageGenerationPrompt: string} = JSON.parse(response.generations[0].text)
-
-
-      return {
-        content: generatedContent.generatedContent,
-        imageGenerationPrompt: generatedContent.imageGenerationPrompt,
-        tokens: response.meta?.billedUnits?.outputTokens,
+  
+      const jsonText = response.generations[0].text;
+      
+      try {
+        const jsonStart = jsonText.indexOf('{');
+        const jsonEnd = jsonText.lastIndexOf('}') + 1;
+        const cleanJson = jsonText.substring(jsonStart, jsonEnd);
+        
+        const generatedContent = JSON.parse(cleanJson);
+        
+        return {
+          audience: generatedContent?.suggestedAudience,
+          content: generatedContent?.generatedContent,
+          imageGenerationPrompt: generatedContent?.imageGenerationPrompt,
+          tokens: response.meta?.billedUnits?.outputTokens,
+        };
+      } catch (parseError) {
+        console.error('JSON Parsing Error:', parseError);
+        throw new Error("Error occurred while parsing data");
       }
     } catch (error) {
-      throw new Error(`OpenAI API Error: ${error.message}`);
+      throw new Error(`AI API Error: ${error.message}`);
     }
   }
-
+  
   async generateImage(prompt: string) {
     try {
       return await this.client.textToImage({

@@ -1,4 +1,4 @@
-import { IsString, IsIn, IsOptional } from 'class-validator';
+import { IsString, IsIn, IsOptional, IsNumber,  } from 'class-validator';
 
 export class GenerateTextDto {
   @IsString()
@@ -10,4 +10,7 @@ export class GenerateTextDto {
   @IsOptional()
   @IsIn(['formal', 'casual', 'technical'])
   tone?: string;
+
+  @IsNumber({allowInfinity: false, allowNaN: false})
+  wordLimit?: number = 600;
 }
